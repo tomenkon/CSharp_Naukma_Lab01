@@ -13,8 +13,11 @@ namespace Lab1.ViewModels
 {
     class BirthDateAndZodiacsViewModel: INotifyPropertyChanged
     {
+        #region Fields
         private UserInfo _birthInfo = new UserInfo();
         private RelayCommand<object> _pickDateCommand;
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
 
         #region Properties
         public DateTime BirthDate
@@ -56,6 +59,7 @@ namespace Lab1.ViewModels
 
         #endregion
 
+        #region Command Logic
         private void ProccedWithDate(object obj)
         {
             TimeSpan difference = (DateTime.Today - BirthDate);
@@ -90,7 +94,13 @@ namespace Lab1.ViewModels
             return !String.IsNullOrWhiteSpace(BirthDate.ToString("d"));
         }
 
-        #region Calculate Zodiacs
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+
+        #region Zodiacs Calculation
         private string CalcWesternZodiac(DateTime birthDate)
         {
             string zodiacSign = "";
@@ -220,12 +230,5 @@ namespace Lab1.ViewModels
             return zodiacSign;
         }
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }
